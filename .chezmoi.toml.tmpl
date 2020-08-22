@@ -1,0 +1,7 @@
+sourceDir = "{{ .chezmoi.sourceDir }}"
+[data]
+{{- if (env "CODESPACES") }}
+  codespaces = true
+{{- else }}
+  codespaces = false
+{{- end }}
