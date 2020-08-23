@@ -9,7 +9,10 @@ on:
 jobs:
   clone-and-install:
     runs-on: ubuntu-latest
-    container: mcr.microsoft.com/vscode/devcontainers/base:ubuntu
+    container:
+      image: mcr.microsoft.com/vscode/devcontainers/base:ubuntu
+      env:
+        CODESPACES: true
     steps:
       - uses: actions/checkout@v2
       - run: ./install.sh
