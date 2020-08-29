@@ -1,4 +1,5 @@
 {{- $codespaces:= env "CODESPACES" | not | not -}}
+sourceDir = "{{ .chezmoi.sourceDir }}"
 
 [data]
   name = "Your name"
