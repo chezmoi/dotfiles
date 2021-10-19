@@ -1,11 +1,13 @@
-{{- $codespaces:= env "CODESPACES" | not | not -}}
+{{- $codespaces := env "CODESPACES" | not | not -}}{{/* Codespaces dotfiles setup is non-interactive */}}
+{{- $email := get . "email" -}}
+{{- if (and (not $codespaces) stdinIsATTY) -}}{{/* Interactive setup, so prompt for an email address */}}
+{{-   if not $email -}}
+{{-     $email = promptString "email" -}}
+{{-   end -}}
+{{- end -}}
 sourceDir = "{{ .chezmoi.sourceDir }}"
 
 [data]
   name = "Your name"
   codespaces = {{ $codespaces }}
-{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
-  email = "your@email.com"
-{{- else }}{{/* Interactive setup, so prompt for an email address */}}
-  email = "{{ promptString "email" }}"
-{{- end }}
+  email = "{{ default "your@email.com" $email }}"
