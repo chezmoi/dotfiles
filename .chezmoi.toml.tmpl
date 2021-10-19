@@ -1,5 +1,5 @@
-{{- /* Checks if running in a devcontainer (GitHub Codespaces or VS Code Remote - Containers) */ -}}
-{{- $devcontainer := or (env "CODESPACES") (env "REMOTE_CONTAINERS") | not | not -}}
+{{- /* Checks if running interactively, which is not the case for GitHub Codespaces */ -}}
+{{- $interactive := stdinIsATTY -}}
 
 {{- /* Initializes the name variable with a default value */ -}}
 {{- $name := "Your Name" -}}
@@ -7,7 +7,7 @@
 {{- if hasKey . "name" -}}
 {{-   $name = .name -}}
 {{- /* Otherwise, if running interactively, prompts for a name */ -}}
-{{- else if stdinIsATTY | and (not $devcontainer) -}}
+{{- else if $interactive -}}
 {{-   $name = promptString "name" $name -}}
 {{- end -}}
 
@@ -15,17 +15,16 @@
 {{- $email := "your@email.com" -}}
 {{- if hasKey . "email" -}}
 {{-   $email = .email -}}
-{{- else if stdinIsATTY | and (not $devcontainer) -}}
+{{- else if $interactive -}}
 {{-   $email = promptString "email" $email -}}
 {{- end -}}
 
-{{- if stdinIsATTY | and (not $devcontainer) -}}
+{{- if $interactive -}}
 {{-   writeToStdout "💡 Tip: you can re-enter your name and email with `chezmoi init --data=false`.\n" -}}
 {{- end -}}
 
 sourceDir = "{{ .chezmoi.sourceDir }}"
 
 [data]
-  devcontainer = {{ $devcontainer }}
-  name = {{ $name | quote }}
-  email = {{ $email | quote }}
+  name = "{{ $name }}"
+  email = "{{ $email }}"
