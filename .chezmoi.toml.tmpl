@@ -1,13 +1,30 @@
-{{- $codespaces := env "CODESPACES" | not | not -}}{{/* Codespaces dotfiles setup is non-interactive */}}
-{{- $email := get . "email" -}}
-{{- if (and (not $codespaces) stdinIsATTY) -}}{{/* Interactive setup, so prompt for an email address */}}
-{{-   if not $email -}}
-{{-     $email = promptString "email" -}}
-{{-   end -}}
+{{- /* Checks if running interactively, which is not the case for GitHub Codespaces */ -}}
+{{- $interactive := stdinIsATTY -}}
+
+{{- /* Initializes the name variable with a default value */ -}}
+{{- $name := "Your Name" -}}
+{{- /* If name was previously set, reuses it */ -}}
+{{- if hasKey . "name" -}}
+{{-   $name = .name -}}
+{{- /* Otherwise, if running interactively, prompts for a name */ -}}
+{{- else if $interactive -}}
+{{-   $name = promptString "name" $name -}}
 {{- end -}}
+
+{{- /* Does the same for the email */ -}}
+{{- $email := "your@email.com" -}}
+{{- if hasKey . "email" -}}
+{{-   $email = .email -}}
+{{- else if $interactive -}}
+{{-   $email = promptString "email" $email -}}
+{{- end -}}
+
+{{- if $interactive -}}
+{{-   writeToStdout "💡 Tip: you can re-enter your name and email with `chezmoi init --data=false`.\n" -}}
+{{- end -}}
+
 sourceDir = "{{ .chezmoi.sourceDir }}"
 
 [data]
-  name = "Your name"
-  codespaces = {{ $codespaces }}
-  email = "{{ default "your@email.com" $email }}"
+  name = "{{ $name }}"
+  email = "{{ $email }}"
