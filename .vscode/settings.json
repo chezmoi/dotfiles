@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "*.yaml.tmpl": "helm",
+        ".chezmoiignore": "helm",
+        ".chezmoiremove": "helm",
+        "**/.chezmoitemplates/*": "helm"
+    }
+}
